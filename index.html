@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order Online — Kirana Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F7F1E3;
+    --surface:#FFFDF8;
+    --ink:#2B2118;
+    --ink-soft:#6B5D4F;
+    --green:#1F6E5C;
+    --green-dark:#154F42;
+    --yellow:#D9A02A;
+    --red:#B23A2E;
+    --line:#E3D9C4;
+    --line-strong:#CBBD9E;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:90px;
+  }
+  ::selection{background:var(--yellow);color:var(--ink);}
+
+  /* ---------- Header ---------- */
+  header{
+    padding:28px 20px 22px;
+    text-align:center;
+    position:relative;
+  }
+  header::after{
+    content:"";
+    display:block;
+    height:3px;
+    margin:20px auto 0;
+    width:100%;
+    max-width:520px;
+    background-image:repeating-linear-gradient(90deg,var(--line-strong) 0 10px,transparent 10px 20px);
+  }
+  .eyebrow{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--green);
+    font-weight:600;
+  }
+  h1{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:clamp(28px,7vw,40px);
+    margin:6px 0 4px;
+    letter-spacing:-.01em;
+  }
+  header p{
+    color:var(--ink-soft);
+    font-size:14.5px;
+    margin:0;
+    max-width:420px;
+    margin:0 auto;
+  }
+
+  main{max-width:560px;margin:0 auto;padding:0 16px;}
+
+  section{margin-top:30px;}
+  .section-title{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    color:var(--ink-soft);
+    margin-bottom:12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .section-title span.n{
+    background:var(--green);
+    color:#fff;
+    width:20px;height:20px;
+    border-radius:50%;
+    display:inline-flex;
+    align-items:center;justify-content:center;
+    font-size:11px;
+  }
+
+  /* ---------- Product cards ---------- */
+  .product{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:16px 16px 14px;
+    margin-bottom:12px;
+  }
+  .product-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:12px;
+  }
+  .product-name{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:19px;
+  }
+  .product-price{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+  .chips{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:12px;
+  }
+  .chip{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:13px;
+    font-weight:500;
+    border:1px solid var(--line-strong);
+    background:transparent;
+    color:var(--ink);
+    padding:7px 13px;
+    border-radius:999px;
+    cursor:pointer;
+    transition:.15s;
+  }
+  .chip:hover{border-color:var(--green);}
+  .chip.active{
+    background:var(--green);
+    border-color:var(--green);
+    color:#fff;
+  }
+  .chip:focus-visible, .stepper button:focus-visible, .cta:focus-visible, input:focus-visible, textarea:focus-visible{
+    outline:2px solid var(--green);
+    outline-offset:2px;
+  }
+  .qty-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
+  .stepper{
+    display:flex;
+    align-items:center;
+    border:1px solid var(--line-strong);
+    border-radius:10px;
+    overflow:hidden;
+  }
+  .stepper button{
+    width:38px;height:38px;
+    border:none;
+    background:var(--surface);
+    font-size:18px;
+    color:var(--green-dark);
+    cursor:pointer;
+  }
+  .stepper button:hover{background:var(--bg);}
+  .stepper .val{
+    min-width:64px;
+    text-align:center;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:14px;
+  }
+  .line-total{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:15px;
+    color:var(--green-dark);
+    min-width:64px;
+    text-align:right;
+  }
+
+  /* ---------- Receipt / cart ---------- */
+  .receipt{
+    background:var(--surface);
+    border:1.5px dashed var(--line-strong);
+    border-radius:4px;
+    padding:20px 18px;
+    position:relative;
+  }
+  .receipt::before,.receipt::after{
+    content:"";
+    position:absolute;
+    left:0;right:0;
+    height:10px;
+    background:
+      radial-gradient(circle at 10px 0, transparent 6px, var(--bg) 6.5px) repeat-x;
+    background-size:20px 10px;
+  }
+  .receipt::before{top:-6px;}
+  .receipt::after{bottom:-6px;transform:rotate(180deg);}
+  .receipt-empty{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:14px;
+    padding:14px 0;
+  }
+  .receipt-row{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    font-size:14px;
+    padding:7px 0;
+    border-bottom:1px dotted var(--line);
+  }
+  .receipt-row:last-of-type{border-bottom:none;}
+  .receipt-row .rname{font-weight:500;}
+  .receipt-row .rmeta{color:var(--ink-soft);font-size:12.5px;}
+  .receipt-row .ramount{font-family:'Space Grotesk',sans-serif;font-weight:600;}
+  .receipt-total{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:12px;
+    padding-top:12px;
+    border-top:2px solid var(--ink);
+    font-family:'Space Grotesk',sans-serif;
+  }
+  .receipt-total .label{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft);}
+  .receipt-total .amount{font-size:22px;font-weight:700;color:var(--green-dark);}
+
+  /* ---------- Form ---------- */
+  .field{margin-bottom:14px;}
+  .field label{
+    display:block;
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+  }
+  .field input, .field textarea{
+    width:100%;
+    border:1px solid var(--line-strong);
+    background:var(--surface);
+    border-radius:10px;
+    padding:11px 13px;
+    font-family:'Inter',sans-serif;
+    font-size:15px;
+    color:var(--ink);
+  }
+  .field textarea{resize:vertical;min-height:70px;}
+  .field-row{display:flex;gap:10px;}
+  .field-row .field{flex:1;}
+
+  .error{
+    color:var(--red);
+    font-size:13px;
+    margin-top:-4px;
+    margin-bottom:14px;
+    display:none;
+  }
+  .error.show{display:block;}
+
+  .cta{
+    width:100%;
+    background:var(--green);
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    padding:16px;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:16px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    cursor:pointer;
+    transition:.15s;
+  }
+  .cta:hover{background:var(--green-dark);}
+  .cta svg{width:19px;height:19px;fill:#fff;flex-shrink:0;}
+
+  footer{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:12px;
+    margin-top:34px;
+    padding-bottom:10px;
+  }
+
+  /* ---------- Sticky mobile bar ---------- */
+  .stickybar{
+    position:fixed;
+    left:0;right:0;bottom:0;
+    background:var(--ink);
+    color:#fff;
+    padding:12px 18px;
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    font-family:'Space Grotesk',sans-serif;
+    z-index:10;
+  }
+  .stickybar.show{display:flex;}
+  .stickybar .info{font-size:13.5px;}
+  .stickybar .info b{font-size:16px;}
+  .stickybar button{
+    background:var(--yellow);
+    color:var(--ink);
+    border:none;
+    border-radius:8px;
+    padding:9px 16px;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:13.5px;
+    cursor:pointer;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Order online</div>
+  <h1>Your Kirana Store</h1>
+  <p>Pick what you need, tell us where to bring it — no more remembering your list at the counter.</p>
+</header>
+
+<main>
+
+  <section id="products">
+    <div class="section-title"><span class="n">1</span> Choose your items</div>
+    <div id="productList"></div>
+  </section>
+
+  <section id="receiptSection">
+    <div class="section-title"><span class="n">2</span> Your order</div>
+    <div class="receipt">
+      <div id="receiptBody"><div class="receipt-empty">No items yet — add something above</div></div>
+      <div class="receipt-total">
+        <span class="label">Total</span>
+        <span class="amount" id="totalAmount">₹0</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="deliverySection">
+    <div class="section-title"><span class="n">3</span> Delivery details</div>
+    <div class="field">
+      <label for="custName">Your name</label>
+      <input type="text" id="custName" placeholder="e.g. Rohit Sharma" autocomplete="name">
+    </div>
+    <div class="field">
+      <label for="custPhone">Your phone number</label>
+      <input type="tel" id="custPhone" placeholder="10-digit mobile number" autocomplete="tel">
+    </div>
+    <div class="field">
+      <label for="custAddress">Delivery address</label>
+      <textarea id="custAddress" placeholder="House no, street, area..."></textarea>
+    </div>
+    <div class="field">
+      <label for="custLandmark">Landmark (optional)</label>
+      <input type="text" id="custLandmark" placeholder="e.g. Near XYZ School">
+    </div>
+    <div class="error" id="formError">Please add at least one item, your name, phone number and address.</div>
+    <button class="cta" id="sendBtn">
+      <svg viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2m0 1.67c2.2 0 4.27.86 5.82 2.42a8.2 8.2 0 0 1 2.42 5.82c0 4.55-3.7 8.25-8.25 8.25a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.38c0-4.55 3.7-8.25 8.25-8.25M8.53 6.85c-.16 0-.42.06-.64.3-.22.24-.85.83-.85 2.02s.87 2.35.99 2.51c.12.16 1.7 2.73 4.2 3.72 2.08.82 2.5.66 2.95.62.45-.04 1.46-.6 1.66-1.18.2-.58.2-1.07.14-1.18-.06-.1-.22-.16-.45-.28-.24-.12-1.4-.7-1.62-.77-.22-.08-.38-.12-.53.12-.16.24-.6.77-.74.93-.14.16-.27.18-.5.06-.24-.12-1-.37-1.9-1.18-.7-.63-1.18-1.4-1.31-1.64-.14-.24-.02-.37.1-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.53-1.32-.74-1.8-.19-.46-.39-.4-.53-.4h-.45"/></svg>
+      Send order on WhatsApp
+    </button>
+  </section>
+
+  <footer>Tap "Send" to open WhatsApp with your order filled in — just hit send there.</footer>
+</main>
+
+<div class="stickybar" id="stickyBar">
+  <div class="info"><span id="stickyCount">0</span> items · <b id="stickyTotal">₹0</b></div>
+  <button id="stickyScroll">Review order</button>
+</div>
+
+<script>
+/* ============ CONFIG — edit here ============ */
+const SHOP_WHATSAPP_NUMBER = "919569687000"; // country code 91 + number, no + or spaces
+
+const PRODUCTS = [
+  { id:"rice",   name:"Rice",   pricePerKg:110, mode:"weight" },
+  { id:"tea",    name:"Tea",    pricePerKg:360, mode:"weight" },
+  { id:"sugar",  name:"Sugar",  pricePerKg:50,  mode:"weight" },
+  { id:"coffee", name:"Coffee", priceEach:2,    mode:"count", unitLabel:"sachet" }
+];
+/* ============================================= */
+
+const state = {}; // id -> grams (weight items) or count (count items)
+PRODUCTS.forEach(p => state[p.id] = 0);
+
+const productList = document.getElementById("productList");
+
+function formatWeight(g){
+  if(g < 1000) return g + " g";
+  const kg = g/1000;
+  return (Number.isInteger(kg) ? kg : kg.toFixed(2).replace(/0+$/,'').replace(/\.$/,'')) + " kg";
+}
+function rupees(n){ return "₹" + Math.round(n).toLocaleString("en-IN"); }
+
+function lineCost(p){
+  if(p.mode === "weight") return (state[p.id]/1000) * p.pricePerKg;
+  return state[p.id] * p.priceEach;
+}
+
+function render(){
+  renderReceipt();
+  renderSticky();
+}
+
+function buildProductCard(p){
+  const card = document.createElement("div");
+  card.className = "product";
+
+  const top = document.createElement("div");
+  top.className = "product-top";
+  top.innerHTML = `
+    <div class="product-name">${p.name}</div>
+    <div class="product-price">${p.mode === "weight" ? "₹"+p.pricePerKg+" / kg" : "₹"+p.priceEach+" / "+p.unitLabel}</div>
+  `;
+  card.appendChild(top);
+
+  if(p.mode === "weight"){
+    const chips = document.createElement("div");
+    chips.className = "chips";
+    const presets = [100,250,500,1000];
+    presets.forEach(g => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "chip";
+      chip.textContent = formatWeight(g);
+      chip.addEventListener("click", () => {
+        state[p.id] = g;
+        updateProductUI(p.id);
+        render();
+      });
+      chip.dataset.grams = g;
+      chips.appendChild(chip);
+    });
+    card.appendChild(chips);
+
+    const row = document.createElement("div");
+    row.className = "qty-row";
+    row.innerHTML = `
+      <div class="stepper">
+        <button type="button" data-action="dec" aria-label="Decrease quantity">−</button>
+        <span class="val" data-role="val">0 g</span>
+        <button type="button" data-action="inc" aria-label="Increase quantity">+</button>
+      </div>
+      <div class="line-total" data-role="cost">₹0</div>
+    `;
+    row.querySelector('[data-action="dec"]').addEventListener("click", () => {
+      state[p.id] = Math.max(0, state[p.id] - 250);
+      updateProductUI(p.id); render();
+    });
+    row.querySelector('[data-action="inc"]').addEventListener("click", () => {
+      state[p.id] = state[p.id] + 250;
+      updateProductUI(p.id); render();
+    });
+    card.appendChild(row);
+  } else {
+    const row = document.createElement("div");
+    row.className = "qty-row";
+    row.innerHTML = `
+      <div class="stepper">
+        <button type="button" data-action="dec" aria-label="Decrease quantity">−</button>
+        <span class="val" data-role="val">0 ${p.unitLabel}s</span>
+        <button type="button" data-action="inc" aria-label="Increase quantity">+</button>
+      </div>
+      <div class="line-total" data-role="cost">₹0</div>
+    `;
+    row.querySelector('[data-action="dec"]').addEventListener("click", () => {
+      state[p.id] = Math.max(0, state[p.id] - 1);
+      updateProductUI(p.id); render();
+    });
+    row.querySelector('[data-action="inc"]').addEventListener("click", () => {
+      state[p.id] = state[p.id] + 1;
+      updateProductUI(p.id); render();
+    });
+    card.appendChild(row);
+  }
+
+  card.dataset.id = p.id;
+  return card;
+}
+
+function updateProductUI(id){
+  const p = PRODUCTS.find(x => x.id === id);
+  const card = productList.querySelector(`.product[data-id="${id}"]`);
+  if(!card) return;
+  const valEl = card.querySelector('[data-role="val"]');
+  const costEl = card.querySelector('[data-role="cost"]');
+  if(p.mode === "weight"){
+    valEl.textContent = formatWeight(state[id]);
+    card.querySelectorAll(".chip").forEach(chip => {
+      chip.classList.toggle("active", Number(chip.dataset.grams) === state[id]);
+    });
+  } else {
+    valEl.textContent = state[id] + " " + p.unitLabel + (state[id] === 1 ? "" : "s");
+  }
+  costEl.textContent = rupees(lineCost(p));
+}
+
+PRODUCTS.forEach(p => productList.appendChild(buildProductCard(p)));
+PRODUCTS.forEach(p => updateProductUI(p.id));
+
+function getActiveItems(){
+  return PRODUCTS.filter(p => state[p.id] > 0);
+}
+
+function totalAmount(){
+  return getActiveItems().reduce((sum,p) => sum + lineCost(p), 0);
+}
+
+function renderReceipt(){
+  const body = document.getElementById("receiptBody");
+  const items = getActiveItems();
+  if(items.length === 0){
+    body.innerHTML = '<div class="receipt-empty">No items yet — add something above</div>';
+  } else {
+    body.innerHTML = items.map(p => {
+      const qtyLabel = p.mode === "weight" ? formatWeight(state[p.id]) : state[p.id] + " " + p.unitLabel + (state[p.id]===1?"":"s");
+      return `<div class="receipt-row">
+        <div><div class="rname">${p.name}</div><div class="rmeta">${qtyLabel}</div></div>
+        <div class="ramount">${rupees(lineCost(p))}</div>
+      </div>`;
+    }).join("");
+  }
+  document.getElementById("totalAmount").textContent = rupees(totalAmount());
+}
+
+function renderSticky(){
+  const bar = document.getElementById("stickyBar");
+  const items = getActiveItems();
+  if(items.length === 0){
+    bar.classList.remove("show");
+    return;
+  }
+  bar.classList.add("show");
+  document.getElementById("stickyCount").textContent = items.length;
+  document.getElementById("stickyTotal").textContent = rupees(totalAmount());
+}
+
+document.getElementById("stickyScroll").addEventListener("click", () => {
+  document.getElementById("deliverySection").scrollIntoView({behavior:"smooth", block:"start"});
+});
+
+document.getElementById("sendBtn").addEventListener("click", () => {
+  const items = getActiveItems();
+  const name = document.getElementById("custName").value.trim();
+  const phone = document.getElementById("custPhone").value.trim();
+  const address = document.getElementById("custAddress").value.trim();
+  const landmark = document.getElementById("custLandmark").value.trim();
+  const errorEl = document.getElementById("formError");
+
+  if(items.length === 0 || !name || !phone || !address){
+    errorEl.classList.add("show");
+    return;
+  }
+  errorEl.classList.remove("show");
+
+  let msg = "🛒 *New Order*\n\n";
+  items.forEach(p => {
+    const qtyLabel = p.mode === "weight" ? formatWeight(state[p.id]) : state[p.id] + " " + p.unitLabel + (state[p.id]===1?"":"s");
+    msg += `• ${p.name} — ${qtyLabel} — ${rupees(lineCost(p))}\n`;
+  });
+  msg += `\n*Total: ${rupees(totalAmount())}*\n\n`;
+  msg += `*Deliver to:*\n${name}\n${phone}\n${address}`;
+  if(landmark) msg += `\nLandmark: ${landmark}`;
+
+  const url = `https://wa.me/${SHOP_WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+  window.open(url, "_blank");
+});
+
+render();
+</script>
+</body>
+</html>
